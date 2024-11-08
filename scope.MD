@@ -12,3 +12,22 @@
 - Reactions - emojis etc
 - Moderation - User can manage whether or not to display a Post
 - Comments
+
+---
+
+> **DB**
+
+> Post
+
+    * ID
+    * User_ID - author
+    * Title
+    * URL
+    * Type - Video/Image
+
+> User
+
+    * ID
+    * username
+    * email
+    * password
