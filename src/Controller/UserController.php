@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Services\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,14 +13,13 @@ use Symfony\Component\Routing\Attribute\Route;
 class UserController extends AbstractController
 {
     function __construct(
-        EntityManagerInterface $entityManager
+        public EntityManagerInterface $entityManager,
+        public UserService $userService
     ) {}
 
     #[Route('/api/user', name: 'app_store_user', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
-        $request = json_decode($request->getContent(), true);
-
         if (empty($request)) {
             return $this->json([
                 'message' => 'User required fields are empty',
@@ -27,11 +27,7 @@ class UserController extends AbstractController
             ], 401);
         }
 
-        $user = new User();
-
-        // $user->setEmail($request->email);
-        // $user->setPassword($request->password);
-
+        $user = $this->userService->createUser($request);
 
         return $this->json([
             'message' => 'Welcome to your new controller!',
