@@ -17,7 +17,7 @@ class UserController extends AbstractController
         public UserService $userService
     ) {}
 
-    #[Route('/api/user', name: 'app_store_user', methods: ['POST'])]
+    #[Route('/api/user/register', name: 'app_api_user_register', methods: ['POST'])]
     public function store(Request $request): JsonResponse
     {
         if (empty($request)) {
@@ -29,9 +29,15 @@ class UserController extends AbstractController
 
         $user = $this->userService->createUser($request);
 
+        if (empty($user)) {
+            return $this->json([
+                'message' => "User couldn't be created",
+                'success' => false,
+            ], 422);
+        }
+
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/UserController.php',
+            'result' => true,
         ]);
     }
 
