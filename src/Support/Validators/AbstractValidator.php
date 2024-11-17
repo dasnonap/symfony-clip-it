@@ -3,6 +3,7 @@
 namespace App\Support\Validators;
 
 use App\Interfaces\EntityValidatorInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractValidator
@@ -14,22 +15,20 @@ abstract class AbstractValidator
     /**
      * Validate function to handle the Entity Validation errors
      * @param EntityValidatorInterface $entity the entity to check
-     * @return bool 
+     * @return void 
      */
-    final function validate(EntityValidatorInterface $entity): bool
+    function validate(EntityValidatorInterface $entity): void
     {
         $errors = $this->validator->validate($entity);
 
         if (!empty($errors)) {
             $this->handleErrorsEntity($errors);
         }
-
-        return true;
     }
 
     /**
      * Specify the error handling
-     * @param mixed $errors the incomming errors
+     * @param ConstraintViolationList $errors the incomming errors
      */
-    abstract function handleErrorsEntity(mixed $errors);
+    abstract function handleErrorsEntity(ConstraintViolationList  $errors);
 }
