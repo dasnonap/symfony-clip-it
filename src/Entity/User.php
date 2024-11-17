@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Interfaces\EntityValidatorInterface;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,9 +10,14 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User
+implements
+    UserInterface,
+    PasswordAuthenticatedUserInterface,
+    EntityValidatorInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,11 +25,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $username = null;
 
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Your username must be at least {{ limit }} characters long',
+        maxMessage: 'Your username cannot be longer than {{ limit }} characters',
+    )]
+    private string $username;
+
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 511)]
     private ?string $password = null;
 
@@ -33,6 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $posts;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::ARRAY)]
     private array $roles = [];
 

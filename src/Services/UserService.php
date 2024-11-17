@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Support\Validators\EntityValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,7 @@ class UserService
         private UserPasswordHasherInterface $hasher,
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepo,
+        private EntityValidator $entityValidator,
     ) {}
 
     /**
@@ -29,12 +31,13 @@ class UserService
         $user = new User();
 
         $user->setUsername($request->username);
-        $user->setEmail($request->email);
-        $user->setPassword(
-            $this->hasher->hashPassword($user, $request->password)
-        );
-        $user->setRoles(['ROLE_USER']);
+        // $user->setEmail($request->email);
+        // $user->setPassword(
+        //     $this->hasher->hashPassword($user, $request->password)
+        // );
+        // $user->setRoles(['ROLE_USER']);
 
+        $this->entityValidator->validate($user);
 
         if ($this->checkIfUserExists($user)) {
             throw new LogicException("User already exists with the provided email.");
