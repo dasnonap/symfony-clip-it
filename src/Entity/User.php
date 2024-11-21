@@ -25,23 +25,27 @@ implements
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-
     #[Assert\Length(
         min: 2,
         max: 50,
-        minMessage: 'Your username must be at least {{ limit }} characters long',
-        maxMessage: 'Your username cannot be longer than {{ limit }} characters',
+        minMessage: 'Your username must be at least {{ limit }} characters long.',
+        maxMessage: 'Your username cannot be longer than {{ limit }} characters.',
     )]
     private string $username;
 
-    #[Assert\NotBlank]
+    #[Assert\Email(message: 'Please provide a valid email address.')]
     #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'Your email must be at least {{ limit }} characters long.',
+        maxMessage: 'Your email cannot be longer than {{ limit }} characters.',
+    )]
+    private string $email;
 
-    #[Assert\NotBlank]
     #[ORM\Column(length: 511)]
-    private ?string $password = null;
-
+    #[Assert\NotBlank]
+    private string $password;
     /**
      * @var Collection<int, Post>
      */
@@ -50,7 +54,7 @@ implements
 
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::ARRAY)]
-    private array $roles = [];
+    private array $roles;
 
     public function __construct()
     {

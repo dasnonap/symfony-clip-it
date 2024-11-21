@@ -20,7 +20,6 @@ class UserController extends AbstractController
     public function store(Request $request): JsonResponse
     {
         if (empty($request)) {
-            throw new ValidationException('Please provide valid fields.');
             return $this->json([
                 'message' => 'User required fields are empty',
                 'success' => false,

@@ -31,11 +31,11 @@ class UserService
         $user = new User();
 
         $user->setUsername($request->username);
-        // $user->setEmail($request->email);
-        // $user->setPassword(
-        //     $this->hasher->hashPassword($user, $request->password)
-        // );
-        // $user->setRoles(['ROLE_USER']);
+        $user->setEmail($request->email);
+        $user->setPassword(
+            $this->hasher->hashPassword($user, $request->password)
+        );
+        $user->setRoles(['ROLE_USER']);
 
         $this->entityValidator->validate($user);
 

@@ -21,7 +21,7 @@ abstract class AbstractValidator
     {
         $errors = $this->validator->validate($entity);
 
-        if (!empty($errors)) {
+        if ($errors->has(0)) {
             $this->handleErrorsEntity($errors);
         }
     }
@@ -30,5 +30,5 @@ abstract class AbstractValidator
      * Specify the error handling
      * @param ConstraintViolationList $errors the incomming errors
      */
-    abstract function handleErrorsEntity(ConstraintViolationList  $errors);
+    abstract function handleErrorsEntity(ConstraintViolationList $errors);
 }
