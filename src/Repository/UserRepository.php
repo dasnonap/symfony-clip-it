@@ -31,6 +31,24 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Search user by username and password
+     * @param string $username 
+     * @param string $email
+     * @return array
+     */
+    function findUserByUniqueCredentials(string $username, string $email): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.username = :username')
+            ->orWhere('u.email = :email')
+            ->setParameter('username', $username)
+            ->setParameter('email', $email)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

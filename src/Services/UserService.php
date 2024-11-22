@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Entity\User;
+use App\Exceptions\AuthenticationException;
 use App\Repository\UserRepository;
 use App\Support\Validators\EntityValidator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,7 +41,7 @@ class UserService
         $this->entityValidator->validate($user);
 
         if ($this->checkIfUserExists($user)) {
-            throw new LogicException("User already exists with the provided email.");
+            throw new AuthenticationException("User already exists with the provided email or username.");
         }
 
         $this->entityManager->persist($user);
@@ -56,6 +57,9 @@ class UserService
      */
     private function checkIfUserExists(User $user): bool
     {
-        return ! empty($this->userRepo->findUserByEmail($user->getEmail()));
+        return ! empty($this->userRepo->findUserByUniqueCredentials(
+            $user->getUsername(),
+            $user->getEmail()
+        ));
     }
 }

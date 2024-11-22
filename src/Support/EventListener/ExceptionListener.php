@@ -12,11 +12,13 @@ class ExceptionListener
     {
         $thrownEvent = $event->getThrowable();
 
+        $response = new Response();
         if (!is_subclass_of($thrownEvent, MessageException::class)) {
+            // To do after completed -- Display generec server Error
+            // $response->setStatusCode(SERVER_)
             return;
         }
 
-        $response = new Response();
         $jsonResponse = json_encode(
             [
                 'success' => false,
