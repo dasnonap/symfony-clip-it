@@ -17,11 +17,11 @@ class AccessTokenRepository extends ServiceEntityRepository
     }
 
     /**
-     * Search Access Token by token
+     * Search User Access Token by token string
      * @param string $token the token value
      * @return AccessToken Returns an array of AccessToken objects
      */
-    public function findByTokenValue(string $token): AccessToken
+    public function findByToken(string $token): AccessToken
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.token = :val')

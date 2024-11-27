@@ -55,18 +55,4 @@ class AuthenticationService
         $this->entityManager->remove($oldToken);
         $this->entityManager->flush();
     }
-
-    /**
-     * Check if Token is expired 
-     * @param AccessToken $token 
-     * @return bool
-     */
-    function isTokenValid(AccessToken $token): bool
-    {
-        if (empty($token->getUser())) {
-            return false;
-        }
-
-        return $token->getExpirationDate() > (new DateTime());
-    }
 }

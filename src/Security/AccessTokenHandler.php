@@ -4,7 +4,6 @@ namespace App\Security;
 
 use App\Exceptions\AuthenticationException;
 use App\Repository\AccessTokenRepository;
-use App\Services\AuthenticationService;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 
@@ -12,21 +11,17 @@ class AccessTokenHandler implements AccessTokenHandlerInterface
 {
     function __construct(
         public AccessTokenRepository $tokenRepo,
-        public AuthenticationService $authService,
     ) {}
 
-    function getUserBadgeFrom(string $accessToken): UserBadge
+    function getUserBadgeFrom(string $token): UserBadge
     {
-        if (empty($accessToken)) {
+        if (empty($token)) {
             throw new AuthenticationException('Not authenticated', 401);
         }
 
-        $accessToken = $this->tokenRepo->findByTokenValue($accessToken);
+        $accessToken = $this->tokenRepo->findByToken($token);
 
-        if (
-            empty($accessToken->getUser()) ||
-            ! $this->authService->isTokenValid($accessToken)
-        ) {
+        if (! $accessToken->isTokenValid()) {
             throw new AuthenticationException("Token expired", 401);
         }
 
