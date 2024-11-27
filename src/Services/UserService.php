@@ -7,7 +7,6 @@ use App\Exceptions\AuthenticationException;
 use App\Repository\UserRepository;
 use App\Support\Validators\EntityValidator;
 use Doctrine\ORM\EntityManagerInterface;
-use LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -46,6 +45,27 @@ class UserService
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        return $user;
+    }
+
+    /**
+     * Find user with matching credentials
+     * @param Request $request
+     * @return User 
+     */
+    function findUser(Request $request): User
+    {
+        $jsonRequest = json_decode($request->getContent());
+
+        $user = $this->userRepo->findUserByEmail($jsonRequest->email);
+
+        if (
+            empty($user) ||
+            ! $this->hasher->isPasswordValid($user, $jsonRequest->password)
+        ) {
+            throw new AuthenticationException("User doesn't exist with the provided credentials.");
+        }
 
         return $user;
     }

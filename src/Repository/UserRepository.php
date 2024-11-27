@@ -19,16 +19,16 @@ class UserRepository extends ServiceEntityRepository
     /**
      * Search user by Email
      * @param string $email
-     * @return array
+     * @return User
      */
-    function findUserByEmail(string $email): array
+    function findUserByEmail(string $email): User
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.email = :val')
             ->setParameter('val', $email)
             ->setMaxResults(1)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 
     /**

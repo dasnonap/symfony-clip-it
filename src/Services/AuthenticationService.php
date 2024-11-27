@@ -44,7 +44,17 @@ class AuthenticationService
      * @param User $user 
      * @return void
      */
-    private function invalidateTokens(User $user): void {}
+    private function invalidateTokens(User $user): void
+    {
+        $oldToken = $user->getAccessToken();
+
+        if (empty($oldToken)) {
+            return;
+        }
+
+        $this->entityManager->remove($oldToken);
+        $this->entityManager->flush();
+    }
 
     /**
      * Check if Token is expired 

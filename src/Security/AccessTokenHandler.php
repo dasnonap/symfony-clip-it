@@ -23,12 +23,11 @@ class AccessTokenHandler implements AccessTokenHandlerInterface
 
         $accessToken = $this->tokenRepo->findByTokenValue($accessToken);
 
-        if (empty($accessToken->getUser())) {
+        if (
+            empty($accessToken->getUser()) ||
+            ! $this->authService->isTokenValid($accessToken)
+        ) {
             throw new AuthenticationException("Token expired", 401);
-        }
-
-        if (! $this->authService->isTokenValid($accessToken)) {
-            throw new AuthenticationException('Token expired', 401);
         }
 
         return new UserBadge($accessToken->getUser()->getUserIdentifier());
