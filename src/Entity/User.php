@@ -56,6 +56,9 @@ implements
     #[ORM\Column(type: Types::ARRAY)]
     private array $roles;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?AccessToken $token = null;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -155,5 +158,20 @@ implements
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function setAccessToken(AccessToken $token): static
+    {
+        if ($token->getUser() !== $this) {
+            $token->setUser($this);
+        }
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function getAccessToken(): ?AccessToken
+    {
+        return $this->token;
     }
 }

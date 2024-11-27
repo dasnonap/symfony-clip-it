@@ -16,20 +16,22 @@ class AccessTokenRepository extends ServiceEntityRepository
         parent::__construct($registry, AccessToken::class);
     }
 
-    //    /**
-    //     * @return AccessToken[] Returns an array of AccessToken objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Search Access Token by token
+     * @param string $token the token value
+     * @return AccessToken Returns an array of AccessToken objects
+     */
+    public function findByTokenValue(string $token): AccessToken
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.token = :val')
+            ->setParameter('val', $token)
+            ->orderBy('a.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 
     //    public function findOneBySomeField($value): ?AccessToken
     //    {

@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Exceptions\ValidationException;
+use App\Services\AuthenticationService;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,7 +13,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class UserController extends AbstractController
 {
     function __construct(
-        public UserService $userService
+        public UserService $userService,
+        public AuthenticationService $authService,
+        public Security $secutiry,
     ) {}
 
     #[Route('/api/user/register', name: 'app_api_user_register', methods: ['POST'])]
@@ -35,8 +37,17 @@ class UserController extends AbstractController
             ], 422);
         }
 
+        $userToken = $this->authService->generateUserToken($user);
+
         return $this->json([
             'result' => true,
+            'token' => $userToken->getToken()
         ]);
+    }
+
+    #[Route('/api/test', name: 'api_test', methods: ['POST'])]
+    public function test(Request $request): JsonResponse
+    {
+        dd($this->secutiry->getUser());
     }
 }
