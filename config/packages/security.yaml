@@ -20,7 +20,9 @@ security:
         token_handler: App\Security\AccessTokenHandler
     secured_area:
       pattern:
+        - ^/create
         - ^/test
+
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -31,6 +33,7 @@ security:
   # Note: Only the *first* access control that matches will be used
   access_control:
     - { path: ^/api/test, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/posts/create, roles: IS_AUTHENTICATED_FULLY }
     # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

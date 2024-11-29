@@ -3,11 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
+use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
+#[Uploadable]
 class Media
 {
     #[ORM\Id]
@@ -21,12 +26,15 @@ class Media
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $path = null;
+    #[UploadableField(mapping: 'uploads', fileNameProperty: 'uploadName', size: 'uploadSize')]
+    private ?string $uploadFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'uploadedMedia')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * @var Collection<int, Post>
@@ -34,9 +42,39 @@ class Media
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'media')]
     private Collection $relatedPosts;
 
+    #[ORM\Column(length: 255)]
+    private ?string $uploadName = null;
+
+    #[ORM\Column]
+    private ?int $uploadSize = null;
+
     public function __construct()
     {
         $this->relatedPosts = new ArrayCollection();
+    }
+
+    function setImageFilge(?File $file): void
+    {
+        $this->uploadFile = $file;
+
+        if (! empty($file)) {
+            $this->updatedAt = new DateTimeImmutable();
+        }
+    }
+
+    function getImageFile(): ?File
+    {
+        return $this->uploadFile;
+    }
+
+    function setUpdatedAt(?DateTimeImmutable $time): void
+    {
+        $this->updatedAt = $time;
+    }
+
+    function getUpdateAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
     }
 
     public function getId(): ?int
@@ -64,18 +102,6 @@ class Media
     public function setType(string $type): static
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getPath(): ?string
-    {
-        return $this->path;
-    }
-
-    public function setPath(string $path): static
-    {
-        $this->path = $path;
 
         return $this;
     }
@@ -115,6 +141,30 @@ class Media
         if ($this->relatedPosts->removeElement($relatedPost)) {
             $relatedPost->removeMedium($this);
         }
+
+        return $this;
+    }
+
+    public function getUploadName(): ?string
+    {
+        return $this->uploadName;
+    }
+
+    public function setUploadName(string $uploadName): static
+    {
+        $this->uploadName = $uploadName;
+
+        return $this;
+    }
+
+    public function getUploadSize(): ?int
+    {
+        return $this->uploadSize;
+    }
+
+    public function setUploadSize(int $uploadSize): static
+    {
+        $this->uploadSize = $uploadSize;
 
         return $this;
     }
