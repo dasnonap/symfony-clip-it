@@ -68,6 +68,55 @@ class RegisterControllerTest extends WebTestCase
 
         $content = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertContains('errors', array_keys($content), "Errors not trigerred");
+        $this->assertContains('errors', array_keys($content), "Errors not triggered");
+    }
+
+    function testUserLogin(): void
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'POST',
+            '/api/user/login',
+            content: json_encode(
+                [
+                    'email' => 'john@email.com',
+                    'password' => '123'
+                ]
+            )
+        );
+
+        $this->assertResponseStatusCodeSame(200);
+
+        $response = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertContains(
+            'token',
+            array_keys($response),
+            'Token not received'
+        );
+
+        $this->assertNotEmpty($response['token'], 'Token is empty');
+    }
+
+    function testUserLoginException(): void
+    {
+        $client = static::createClient();
+
+        $client->request(
+            'POST',
+            '/api/user/login',
+            content: json_encode(
+                [
+                    'email' => 'john@email.com',
+                    'password' => '1233'
+                ]
+            )
+        );
+
+        $response = json_decode($client->getResponse()->getContent(), true);
+
+        $this->assertResponseStatusCodeSame(401);
+        $this->assertContains('errors', array_keys($response), "Exception not triggered");
     }
 }
