@@ -59,9 +59,16 @@ implements
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?AccessToken $token = null;
 
+    /**
+     * @var Collection<int, Media>
+     */
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'creator', orphanRemoval: true)]
+    private Collection $uploadedMedia;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+        $this->uploadedMedia = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,5 +180,35 @@ implements
     public function getAccessToken(): ?AccessToken
     {
         return $this->token;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getUploadedMedia(): Collection
+    {
+        return $this->uploadedMedia;
+    }
+
+    public function addUploadedMedium(Media $uploadedMedium): static
+    {
+        if (!$this->uploadedMedia->contains($uploadedMedium)) {
+            $this->uploadedMedia->add($uploadedMedium);
+            $uploadedMedium->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUploadedMedium(Media $uploadedMedium): static
+    {
+        if ($this->uploadedMedia->removeElement($uploadedMedium)) {
+            // set the owning side to null (unless already changed)
+            if ($uploadedMedium->getCreator() === $this) {
+                $uploadedMedium->setCreator(null);
+            }
+        }
+
+        return $this;
     }
 }
