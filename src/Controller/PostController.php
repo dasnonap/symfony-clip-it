@@ -3,14 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Media;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PostController
+class PostController extends AbstractController
 {
-    function __construct() {}
+    function __construct(
+        public Security $security
+    ) {}
 
     #[Route('/api/posts/', name: 'app_api_posts_listing', methods: ['GET'])]
     function index()
@@ -19,11 +25,21 @@ class PostController
     }
 
     #[Route('/api/posts/create', name: 'app_api_posts_create', methods: ['POST'])]
-    function create(Request $request): JsonResponse
+    function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        // $media = new Media();
+        $media = new Media();
+        $file = $request->files->get('file');
 
-        // $form = $this->createForm(Media::class, $media);
-        dd($request->request->get('title'));
+        $media->setUploadFile($file);
+        $user = $this->security->getUser();
+        $media->setUpdatedAt(new DateTimeImmutable());
+        $media->setCreatedAt(new DateTimeImmutable());
+        $media->setType('image');
+        $media->setCreator($user);
+
+        // Persist the entity
+        $entityManager->persist($media);
+        $entityManager->flush();
+        dd($media);
     }
 }

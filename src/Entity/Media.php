@@ -27,7 +27,7 @@ class Media
     private ?string $type = null;
 
     #[UploadableField(mapping: 'uploads', fileNameProperty: 'uploadName', size: 'uploadSize')]
-    private ?string $uploadFile = null;
+    private ?File $uploadFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'uploadedMedia')]
     #[ORM\JoinColumn(nullable: false)]
@@ -42,10 +42,10 @@ class Media
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'media')]
     private Collection $relatedPosts;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $uploadName = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $uploadSize = null;
 
     public function __construct()
@@ -53,7 +53,7 @@ class Media
         $this->relatedPosts = new ArrayCollection();
     }
 
-    function setImageFilge(?File $file): void
+    function setUploadFile(?File $file): void
     {
         $this->uploadFile = $file;
 
@@ -62,7 +62,7 @@ class Media
         }
     }
 
-    function getImageFile(): ?File
+    function getUploadFile(): ?File
     {
         return $this->uploadFile;
     }
