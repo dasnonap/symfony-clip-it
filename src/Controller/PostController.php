@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Media;
+use App\Services\MediaService;
+use App\Services\PostService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,7 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends AbstractController
 {
     function __construct(
-        public Security $security
+        public Security $security,
+        public PostService $postService,
+        public MediaService $mediaService,
     ) {}
 
     #[Route('/api/posts/', name: 'app_api_posts_listing', methods: ['GET'])]
@@ -25,21 +29,32 @@ class PostController extends AbstractController
     }
 
     #[Route('/api/posts/create', name: 'app_api_posts_create', methods: ['POST'])]
-    function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    function create(Request $request): JsonResponse
     {
-        $media = new Media();
-        $file = $request->files->get('file');
+        if (empty($request)) {
+            return $this->json([
+                'message' => 'Post required fields are empty',
+                'success' => false,
+            ], 401);
+        }
 
-        $media->setUploadFile($file);
-        $user = $this->security->getUser();
-        $media->setUpdatedAt(new DateTimeImmutable());
-        $media->setCreatedAt(new DateTimeImmutable());
-        $media->setType('image');
-        $media->setCreator($user);
+        $post = $this->postService->createPost($request);
 
-        // Persist the entity
-        $entityManager->persist($media);
-        $entityManager->flush();
-        dd($media);
+        if (empty($post)) {
+            return $this->json([
+                'message' => "Post couldn't be created.",
+                'status' => false
+            ]);
+        }
+
+        // Attach Post media files
+        if (! empty($request->files->get('file'))) {
+            $this->mediaService->createMedia($post, $request);
+        }
+
+        return $this->json([
+            'post' => $post->getId(),
+            'success' => true
+        ]);
     }
 }
