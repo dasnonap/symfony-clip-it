@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use LogicException;
 
 class MediaService
 {
@@ -19,24 +21,34 @@ class MediaService
         public Security $security,
     ) {}
 
-    function createMedia(Post $post, Request $request): Media
+    function createMedia(Post $post, Request $request): ArrayCollection
     {
+        $files = $request->files->get('files');
 
-        $media = new Media();
-        $file = $request->files->get('file');
+        if (empty($files)) {
+            throw new LogicException("Files not provided.");
+        }
 
-        $media->setUploadFile($file);
-        $user = $this->security->getUser();
-        $media->setUpdatedAt(new DateTimeImmutable());
-        $media->setCreatedAt(new DateTimeImmutable());
-        $media->setType('image');
-        $media->setCreator($user);
+        $uploadedMedia = new ArrayCollection();
 
-        $media->addRelatedPost($post);
+        foreach ($files as $file) {
+            $media = new Media();
 
-        $this->entityManager->persist($media);
-        $this->entityManager->flush();
+            $media->setUploadFile($file);
+            $user = $this->security->getUser();
+            $media->setUpdatedAt(new DateTimeImmutable());
+            $media->setCreatedAt(new DateTimeImmutable());
+            $media->setType('image');
+            $media->setCreator($user);
 
-        return $media;
+            $media->addRelatedPost($post);
+
+            $this->entityManager->persist($media);
+            $this->entityManager->flush();
+
+            $uploadedMedia->add($media);
+        }
+
+        return $uploadedMedia;
     }
 }

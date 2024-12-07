@@ -25,6 +25,7 @@ class PostController extends AbstractController
     #[Route('/api/posts/', name: 'app_api_posts_listing', methods: ['GET'])]
     function index()
     {
+
         throw new Exception('not implemented yet');
     }
 
@@ -48,8 +49,10 @@ class PostController extends AbstractController
         }
 
         // Attach Post media files
-        if (! empty($request->files->get('file'))) {
-            $this->mediaService->createMedia($post, $request);
+        if (! empty($request->files->get('files'))) {
+            $files = $this->mediaService->createMedia($post, $request);
+
+            dd($files);
         }
 
         return $this->json([

@@ -34,7 +34,7 @@ class Media
     private ?User $creator = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
+    public ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * @var Collection<int, Post>
