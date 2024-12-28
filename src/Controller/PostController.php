@@ -23,8 +23,9 @@ class PostController extends AbstractController
     ) {}
 
     #[Route('/api/posts/', name: 'app_api_posts_listing', methods: ['GET'])]
-    function index()
+    function index(Request $request): JsonResponse
     {
+
 
         throw new Exception('not implemented yet');
     }
