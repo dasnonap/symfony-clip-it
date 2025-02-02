@@ -211,4 +211,16 @@ implements
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'username' => $this->getUsername(),
+            'email' => $this->getEmail(),
+            'roles' => $this->getRoles(),
+            'token' => $this->getAccessToken()->getToken(),
+            // 'posts' => $this->getPosts(),
+            // 'media' => $this->getUploadedMedia(),
+        ];
+    }
 }

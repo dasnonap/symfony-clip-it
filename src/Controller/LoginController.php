@@ -30,14 +30,14 @@ class LoginController extends AbstractController
                 'success' => false,
             ], 401);
         }
-
         $user = $this->userService->findUser($request);
 
         $userToken = $this->authService->generateUserToken($user);
 
         return $this->json([
             'result' => true,
-            'token' => $userToken->getToken()
+            'token' => $userToken->getToken(),
+            'user' => $user->toArray(),
         ]);
     }
 }

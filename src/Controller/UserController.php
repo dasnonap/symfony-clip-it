@@ -15,7 +15,7 @@ class UserController extends AbstractController
     function __construct(
         public UserService $userService,
         public AuthenticationService $authService,
-        public Security $secutiry,
+        public Security $security,
     ) {}
 
     #[Route('/api/user/register', name: 'app_api_user_register', methods: ['POST'])]
@@ -41,13 +41,14 @@ class UserController extends AbstractController
 
         return $this->json([
             'result' => true,
-            'token' => $userToken->getToken()
+            'token' => $userToken->getToken(),
+            'user' => $user->toArray(),
         ]);
     }
 
     #[Route('/api/test', name: 'api_test', methods: ['POST'])]
     public function test(Request $request): JsonResponse
     {
-        dd($this->secutiry->getUser());
+        dd($this->security->getUser());
     }
 }
