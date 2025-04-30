@@ -2,11 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Media;
 use App\Services\MediaService;
 use App\Services\PostService;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;

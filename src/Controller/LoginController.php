@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use App\Services\AuthenticationService;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,10 +35,28 @@ class LoginController extends AbstractController
 
         $userToken = $this->authService->generateUserToken($user);
 
-        return $this->json([
-            'result' => true,
-            'token' => $userToken->getToken(),
-            'user' => $user->toArray(),
-        ]);
+        $response = new JsonResponse(
+            [
+                'result' => true,
+                'token' => $userToken->getToken(),
+                'user' => $user->toArray(),
+            ]
+        );
+
+        $response->headers->setCookie(
+            new Cookie(
+                'refresh-token',
+                '22222-22222-22222-2222222-222222',
+                time() + 60 * 60,
+                '/',
+                null,
+                false,
+                true,
+                false,
+                Cookie::SAMESITE_LAX
+            )
+        );
+
+        return $response;
     }
 }

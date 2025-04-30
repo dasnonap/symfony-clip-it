@@ -65,6 +65,9 @@ implements
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'creator', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $uploadedMedia;
 
+    #[ORM\Column(length: 255)]
+    private ?string $refresh_token = null;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -79,6 +82,13 @@ implements
     public function getUsername(): ?string
     {
         return $this->username;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function setUsername(string $username): static
@@ -215,12 +225,23 @@ implements
     public function toArray(): array
     {
         return [
+            'id' => $this->getId(),
             'username' => $this->getUsername(),
             'email' => $this->getEmail(),
             'roles' => $this->getRoles(),
             'token' => $this->getAccessToken()->getToken(),
-            // 'posts' => $this->getPosts(),
-            // 'media' => $this->getUploadedMedia(),
         ];
+    }
+
+    public function getRefreshToken(): ?string
+    {
+        return $this->refresh_token;
+    }
+
+    public function setRefreshToken(string $refresh_token): static
+    {
+        $this->refresh_token = $refresh_token;
+
+        return $this;
     }
 }

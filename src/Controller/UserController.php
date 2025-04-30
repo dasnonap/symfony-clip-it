@@ -43,6 +43,8 @@ class UserController extends AbstractController
             'result' => true,
             'token' => $userToken->getToken(),
             'user' => $user->toArray(),
+        ], 200, [
+            'Set-Cookie' => 'blablabla-cookie-token'
         ]);
     }
 
@@ -50,5 +52,11 @@ class UserController extends AbstractController
     public function test(Request $request): JsonResponse
     {
         dd($this->security->getUser());
+    }
+
+    #[Route('/api/user/refresh', name: 'app_api_user_refresh_token')]
+    function refreshToken(Request $request): JsonResponse
+    {
+        dd($request->cookies);
     }
 }
