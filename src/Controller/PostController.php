@@ -13,6 +13,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class PostController extends AbstractController
 {
@@ -22,12 +23,22 @@ class PostController extends AbstractController
         public MediaService $mediaService,
     ) {}
 
+    /**
+     * Get posts
+     */
     #[Route('/api/posts/', name: 'app_api_posts_listing', methods: ['GET'])]
     function index(Request $request): JsonResponse
     {
+        $page = $request->get('page', 1);
 
+        $pagination = $this->postService->paginatePosts($page);
 
-        throw new Exception('not implemented yet');
+        return $this->json(
+            $pagination,
+            200,
+            [],
+            ['groups' => ['post:read']]
+        );
     }
 
     #[Route('/api/posts/create', name: 'app_api_posts_create', methods: ['POST'])]

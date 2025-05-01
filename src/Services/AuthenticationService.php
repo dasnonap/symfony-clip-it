@@ -29,7 +29,7 @@ class AuthenticationService
             (new DateTime('now + 30 mins'))
         );
 
-        $user->setAccessToken($token);
+        $user->setToken($token);
 
         $this->entityManager->persist($token);
         $this->entityManager->persist($user);
@@ -46,7 +46,7 @@ class AuthenticationService
      */
     private function invalidateTokens(User $user): void
     {
-        $oldToken = $user->getAccessToken();
+        $oldToken = $user->getToken();
 
         if (empty($oldToken)) {
             return;

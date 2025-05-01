@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Interfaces\PaginatableEntityInterface;
 use App\Repository\MediaRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,19 +12,23 @@ use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
 use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[Uploadable]
-class Media
+class Media implements PaginatableEntityInterface
 {
+    #[Groups(['post:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['post:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[Groups(['post:read'])]
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
@@ -34,6 +39,7 @@ class Media
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator = null;
 
+    #[Groups(['post:read'])]
     #[ORM\Column]
     public ?\DateTimeImmutable $updatedAt = null;
 
@@ -43,6 +49,7 @@ class Media
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'media')]
     private Collection $relatedPosts;
 
+    #[Groups(['post:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $uploadName = null;
 

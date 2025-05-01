@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
@@ -19,11 +20,13 @@ implements
     PasswordAuthenticatedUserInterface,
     EntityValidatorInterface
 {
+    #[Groups(['post:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['post:read'])]
     #[ORM\Column(length: 255)]
     #[Assert\Length(
         min: 2,
@@ -33,6 +36,7 @@ implements
     )]
     private string $username;
 
+    #[Groups(['post:read'])]
     #[Assert\Email(message: 'Please provide a valid email address.')]
     #[ORM\Column(length: 255)]
     #[Assert\Length(
@@ -52,6 +56,7 @@ implements
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $posts;
 
+    #[Groups(['post:read'])]
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::ARRAY)]
     private array $roles;
@@ -64,6 +69,9 @@ implements
      */
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'creator', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $uploadedMedia;
+
+    #[ORM\Column(length: 255)]
+    private ?string $refresh_token = null;
 
     public function __construct()
     {
@@ -79,6 +87,13 @@ implements
     public function getUsername(): ?string
     {
         return $this->username;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function setUsername(string $username): static
@@ -167,7 +182,7 @@ implements
         return $this;
     }
 
-    public function setAccessToken(AccessToken $token): static
+    public function setToken(AccessToken $token): static
     {
         if ($token->getUser() !== $this) {
             $token->setUser($this);
@@ -177,7 +192,7 @@ implements
         return $this;
     }
 
-    public function getAccessToken(): ?AccessToken
+    public function getToken(): ?AccessToken
     {
         return $this->token;
     }
@@ -215,12 +230,23 @@ implements
     public function toArray(): array
     {
         return [
+            'id' => $this->getId(),
             'username' => $this->getUsername(),
             'email' => $this->getEmail(),
             'roles' => $this->getRoles(),
-            'token' => $this->getAccessToken()->getToken(),
-            // 'posts' => $this->getPosts(),
-            // 'media' => $this->getUploadedMedia(),
+            'token' => $this->getToken()->getToken(),
         ];
+    }
+
+    public function getRefreshToken(): ?string
+    {
+        return $this->refresh_token;
+    }
+
+    public function setRefreshToken(string $refresh_token): static
+    {
+        $this->refresh_token = $refresh_token;
+
+        return $this;
     }
 }

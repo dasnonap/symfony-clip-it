@@ -21,6 +21,12 @@ class MediaService
         public Security $security,
     ) {}
 
+    /**
+     * Create Media entry when adding post
+     * @param Post $post the post
+     * @param Request $request the current request
+     * @return ArrayCollection of created files
+     */
     function createMedia(Post $post, Request $request): ArrayCollection
     {
         $files = $request->files->get('files');

@@ -4,21 +4,22 @@ namespace App\Services;
 
 use App\Entity\Post;
 use App\Repository\PostRepository;
+use App\Services\Paginator\EntityPaginator;
 use App\Support\Validators\EntityValidator;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 class PostService
 {
+    const POST_PER_PAGE = 12;
+
     function __construct(
         public EntityManagerInterface $entityManager,
         public EntityValidator $entityValidator,
         public Security $security,
         public PostRepository $postRepo,
+        private readonly EntityPaginator $paginator,
     ) {}
 
     /**
@@ -39,9 +40,13 @@ class PostService
         return $post;
     }
 
-    function fetchPosts(Request $request): ArrayCollection
+    /**
+     * Create a pagination for the Posts page
+     * @param int $page,
+     * @return array 
+     */
+    function paginatePosts(int $page): array
     {
-        // Pagerfanta::createForCurrentPageWithMaxPerPage(new ArrayAdapter([]));
-        // dd($this->postRepo);
+        return $this->paginator->paginate(new Post(), $page, self::POST_PER_PAGE);
     }
 }

@@ -3,20 +3,26 @@
 namespace App\Entity;
 
 use App\Interfaces\EntityValidatorInterface;
+use App\Interfaces\PaginatableEntityInterface;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraint as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-class Post implements EntityValidatorInterface
+class Post implements
+    EntityValidatorInterface,
+    PaginatableEntityInterface
 {
+    #[Groups(['post:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['post:read'])]
     #[ORM\Column(length: 255, nullable: false)]
     #[Assert\Length(
         min: 5,
@@ -26,14 +32,16 @@ class Post implements EntityValidatorInterface
     )]
     private ?string $title = null;
 
-    #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['post:read'])]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: true)]
     #[Assert\NotEmpty()]
     private ?User $user = null;
 
     /**
      * @var Collection<int, Media>
      */
+    #[Groups(['post:read'])]
     #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'relatedPosts')]
     private Collection $media;
 
