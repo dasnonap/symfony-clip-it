@@ -45,6 +45,10 @@ class Post implements
     #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'relatedPosts')]
     private Collection $media;
 
+    #[Groups(['post:read'])]
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $created_at = null;
+
     public function __construct()
     {
         $this->media = new ArrayCollection();
@@ -99,6 +103,18 @@ class Post implements
     public function removeMedium(Media $medium): static
     {
         $this->media->removeElement($medium);
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }

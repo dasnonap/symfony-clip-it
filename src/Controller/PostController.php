@@ -33,6 +33,7 @@ class PostController extends AbstractController
 
         $pagination = $this->postService->paginatePosts($page);
 
+
         return $this->json(
             $pagination,
             200,

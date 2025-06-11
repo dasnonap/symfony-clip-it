@@ -36,7 +36,6 @@ implements
     )]
     private string $username;
 
-    #[Groups(['post:read'])]
     #[Assert\Email(message: 'Please provide a valid email address.')]
     #[ORM\Column(length: 255)]
     #[Assert\Length(
@@ -56,7 +55,6 @@ implements
     #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $posts;
 
-    #[Groups(['post:read'])]
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::ARRAY)]
     private array $roles;

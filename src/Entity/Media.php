@@ -8,7 +8,9 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use PhpParser\Node\Expr\Cast\String_;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Request;
 use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
 use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -24,11 +26,11 @@ class Media implements PaginatableEntityInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(['post:read'])]
+    // #[Groups(['post:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[Groups(['post:read'])]
+    // #[Groups(['post:read'])]
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
@@ -39,7 +41,7 @@ class Media implements PaginatableEntityInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?User $creator = null;
 
-    #[Groups(['post:read'])]
+    // #[Groups(['post:read'])]
     #[ORM\Column]
     public ?\DateTimeImmutable $updatedAt = null;
 
@@ -49,7 +51,7 @@ class Media implements PaginatableEntityInterface
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'media')]
     private Collection $relatedPosts;
 
-    #[Groups(['post:read'])]
+    // #[Groups(['post:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $uploadName = null;
 

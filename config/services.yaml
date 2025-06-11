@@ -22,5 +22,13 @@ services:
   App\Support\EventListener\ExceptionListener:
     tags:
       - { name: "kernel.event_listener", event: "kernel.exception" }
+  App\Serializer\PostNormalizer:
+      tags:
+          # register the normalizer with a high priority (called earlier)
+          - { name: 'serializer.normalizer', priority: 500 }
+  App\Serializer\MediaNormalizer:
+      tags:
+          # register the normalizer with a high priority (called earlier)
+          - { name: 'serializer.normalizer', priority: 500 }
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

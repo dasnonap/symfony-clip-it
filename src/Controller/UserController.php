@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
@@ -25,7 +26,7 @@ class UserController extends AbstractController
             return $this->json([
                 'message' => 'User required fields are empty',
                 'success' => false,
-            ], 401);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $user = $this->userService->createUser($request);
@@ -33,8 +34,8 @@ class UserController extends AbstractController
         if (empty($user)) {
             return $this->json([
                 'message' => "User couldn't be created",
-                'success' => false,
-            ], 422);
+                'success' => false
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $userToken = $this->authService->generateUserToken($user);

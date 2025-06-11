@@ -16,22 +16,22 @@ class MediaController extends AbstractController
         public UploaderHelper $uploaderHelper,
     ) {}
 
-    // #[Route('media/{id}', 'app_api_get_media', methods: ['GET'])]
-    // function getMediaById(Media $media): BinaryFileResponse
-    // {
-    //     if (empty($media)) {
-    //         throw new LogicException("Media is not found.");
-    //     }
+    #[Route('media/{id}', 'app_api_get_media', methods: ['GET'])]
+    function getMediaById(Media $media): BinaryFileResponse
+    {
+        if (empty($media)) {
+            throw new LogicException("Media is not found.");
+        }
 
-    //     $filePath = $this->uploaderHelper->asset($media, 'uploadFile');
+        $filePath = $this->uploaderHelper->asset($media, 'uploadFile');
 
-    //     $response = new BinaryFileResponse(sprintf('%s/public/%s', $this->getParameter('kernel.project_dir'), $filePath));
+        $response = new BinaryFileResponse(sprintf('%s/public/%s', $this->getParameter('kernel.project_dir'), $filePath));
 
-    //     $response->setContentDisposition(
-    //         ResponseHeaderBag::DISPOSITION_INLINE,
-    //         $media->getUploadName(),
-    //     );
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            $media->getUploadName(),
+        );
 
-    //     return $response;
-    // }
+        return $response;
+    }
 }
