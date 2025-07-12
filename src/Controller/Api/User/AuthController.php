@@ -14,7 +14,8 @@ class AuthController extends AbstractController
     public function __construct(
         public AuthenticationService $authService,
         public UserService $userService,
-    ) {}
+    ) {
+    }
 
     /**
      * Login endpoint.

@@ -11,12 +11,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TokenController extends AbstractController
 {
-    function __construct(
+    public function __construct(
         private AuthenticationService $authService,
-    ) {}
+    ) {
+    }
 
     #[Route('api/user/token/validate', methods: ['POST'])]
-    function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 

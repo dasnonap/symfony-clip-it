@@ -13,10 +13,11 @@ class AuthenticationService
     public function __construct(
         public AccessTokenRepository $accessTokenRepo,
         public EntityManagerInterface $entityManager,
-    ) {}
+    ) {
+    }
 
     /**
-     * Generate User Token
+     * Generate User Token.
      */
     public function generateUserToken(User $user): AccessToken
     {
@@ -41,9 +42,9 @@ class AuthenticationService
     }
 
     /**
-     * Search User by raw access token
+     * Search User by raw access token.
      */
-    public function getUserByToken(string $token): User|null
+    public function getUserByToken(string $token): ?User
     {
         $accessTokenRepo = $this->entityManager->getRepository(AccessToken::class);
         $now = time();
@@ -56,7 +57,7 @@ class AuthenticationService
             return null;
         }
 
-        // Do not invalidate token just return null / prevents spamming and invalidating tokens 
+        // Do not invalidate token just return null / prevents spamming and invalidating tokens
         if ($now > $accessToken->getExpirationDate()->getTimestamp()) {
             return null;
         }

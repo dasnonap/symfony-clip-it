@@ -17,7 +17,8 @@ class RegisterController extends AbstractController
         public UserService $userService,
         public AuthenticationService $authService,
         public Security $security,
-    ) {}
+    ) {
+    }
 
     #[Route('/api/user/register', name: 'app_api_user_register', methods: ['POST'])]
     public function store(Request $request): JsonResponse
