@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api\User;
 
 use App\Services\AuthenticationService;
 use App\Services\UserService;
@@ -11,14 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class UserController extends AbstractController
+class RegisterController extends AbstractController
 {
     public function __construct(
         public UserService $userService,
         public AuthenticationService $authService,
         public Security $security,
-    ) {
-    }
+    ) {}
 
     #[Route('/api/user/register', name: 'app_api_user_register', methods: ['POST'])]
     public function store(Request $request): JsonResponse

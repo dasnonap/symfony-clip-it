@@ -13,9 +13,11 @@ class AuthenticationService
     public function __construct(
         public AccessTokenRepository $accessTokenRepo,
         public EntityManagerInterface $entityManager,
-    ) {
-    }
+    ) {}
 
+    /**
+     * Generate User Token
+     */
     public function generateUserToken(User $user): AccessToken
     {
         $this->invalidateTokens($user);
@@ -36,6 +38,30 @@ class AuthenticationService
         $this->entityManager->flush();
 
         return $token;
+    }
+
+    /**
+     * Search User by raw access token
+     */
+    public function getUserByToken(string $token): User|null
+    {
+        $accessTokenRepo = $this->entityManager->getRepository(AccessToken::class);
+        $now = time();
+
+        $accessToken = $accessTokenRepo->findOneBy([
+            'token' => $token,
+        ]);
+
+        if (empty($accessToken)) {
+            return null;
+        }
+
+        // Do not invalidate token just return null / prevents spamming and invalidating tokens 
+        if ($now > $accessToken->getExpirationDate()->getTimestamp()) {
+            return null;
+        }
+
+        return $accessToken->getUser();
     }
 
     /**

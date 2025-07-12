@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api\User;
 
 use App\Services\AuthenticationService;
 use App\Services\UserService;
@@ -9,13 +9,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class LoginController extends AbstractController
+class AuthController extends AbstractController
 {
     public function __construct(
         public AuthenticationService $authService,
         public UserService $userService,
-    ) {
-    }
+    ) {}
 
     /**
      * Login endpoint.
