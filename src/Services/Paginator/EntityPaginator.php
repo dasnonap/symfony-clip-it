@@ -13,22 +13,19 @@ class EntityPaginator
 {
     private QueryBuilder $query;
 
-    function __construct(
+    public function __construct(
         private readonly RequestStack $requestStack,
         private readonly EntityManagerInterface $entityManager,
         private readonly SerializerInterface $serializer,
-    ) {}
+    ) {
+    }
 
     /**
-     * Create pagination
-     * @param PaginatableEntityInterface $entity
-     * @param int $page,
-     * @param int $postPerPage
-     * @return array
+     * Create pagination.
      */
-    function paginate(PaginatableEntityInterface $entity, int $page, int $postPerPage): array
+    public function paginate(PaginatableEntityInterface $entity, int $page, int $postPerPage): array
     {
-        $offset = $page === 1 ? 0 : ($page * $postPerPage) - $postPerPage;
+        $offset = 1 === $page ? 0 : ($page * $postPerPage) - $postPerPage;
 
         $this->query = $this->entityManager->createQueryBuilder()
             ->select('p')
@@ -40,6 +37,7 @@ class EntityPaginator
         $paginator = new Paginator($this->query, true);
         $maxItems = count($paginator);
         $maxPages = ceil($maxItems / $postPerPage);
+
         // dd($items);
         // dd($this->serializer->serialize($items[0], 'json'));dd
         return [
@@ -47,7 +45,7 @@ class EntityPaginator
             'posts_per_page' => $postPerPage,
             'items' => $items,
             'max_num_pages' => $maxPages,
-            'has_next_page' => $page < $maxPages
+            'has_next_page' => $page < $maxPages,
         ];
     }
 }

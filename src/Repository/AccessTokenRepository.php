@@ -17,8 +17,10 @@ class AccessTokenRepository extends ServiceEntityRepository
     }
 
     /**
-     * Search User Access Token by token string
+     * Search User Access Token by token string.
+     *
      * @param string $token the token value
+     *
      * @return AccessToken Returns an array of AccessToken objects
      */
     public function findByToken(string $token): AccessToken

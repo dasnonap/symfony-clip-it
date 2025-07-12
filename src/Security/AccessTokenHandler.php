@@ -9,11 +9,12 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 
 class AccessTokenHandler implements AccessTokenHandlerInterface
 {
-    function __construct(
+    public function __construct(
         public AccessTokenRepository $tokenRepo,
-    ) {}
+    ) {
+    }
 
-    function getUserBadgeFrom(string $token): UserBadge
+    public function getUserBadgeFrom(string $token): UserBadge
     {
         if (empty($token)) {
             throw new AuthenticationException('Not authenticated', 401);
@@ -21,8 +22,8 @@ class AccessTokenHandler implements AccessTokenHandlerInterface
 
         $accessToken = $this->tokenRepo->findByToken($token);
 
-        if (! $accessToken->isTokenValid()) {
-            throw new AuthenticationException("Token expired", 401);
+        if (!$accessToken->isTokenValid()) {
+            throw new AuthenticationException('Token expired', 401);
         }
 
         return new UserBadge($accessToken->getUser()->getUserIdentifier());

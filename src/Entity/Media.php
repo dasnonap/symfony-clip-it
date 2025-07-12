@@ -4,17 +4,13 @@ namespace App\Entity;
 
 use App\Interfaces\PaginatableEntityInterface;
 use App\Repository\MediaRepository;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use PhpParser\Node\Expr\Cast\String_;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation\Uploadable;
 use Vich\UploaderBundle\Mapping\Annotation\UploadableField;
-use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[Uploadable]
@@ -63,26 +59,26 @@ class Media implements PaginatableEntityInterface
         $this->relatedPosts = new ArrayCollection();
     }
 
-    function setUploadFile(?File $file): void
+    public function setUploadFile(?File $file): void
     {
         $this->uploadFile = $file;
 
-        if (! empty($file)) {
-            $this->updatedAt = new DateTimeImmutable();
+        if (!empty($file)) {
+            $this->updatedAt = new \DateTimeImmutable();
         }
     }
 
-    function getUploadFile(): ?File
+    public function getUploadFile(): ?File
     {
         return $this->uploadFile;
     }
 
-    function setUpdatedAt(?DateTimeImmutable $time): void
+    public function setUpdatedAt(?\DateTimeImmutable $time): void
     {
         $this->updatedAt = $time;
     }
 
-    function getUpdateAt(): ?DateTimeImmutable
+    public function getUpdateAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }

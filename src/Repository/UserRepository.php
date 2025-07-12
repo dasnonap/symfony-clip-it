@@ -17,11 +17,9 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * Search user by Email
-     * @param string $email
-     * @return User
+     * Search user by Email.
      */
-    function findUserByEmail(string $email): User|null
+    public function findUserByEmail(string $email): ?User
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.email = :val')
@@ -32,12 +30,9 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * Search user by username and password
-     * @param string $username 
-     * @param string $email
-     * @return array
+     * Search user by username and password.
      */
-    function findUserByUniqueCredentials(string $username, string $email): array
+    public function findUserByUniqueCredentials(string $username, string $email): array
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.username = :username')

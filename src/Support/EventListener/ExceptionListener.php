@@ -23,7 +23,7 @@ class ExceptionListener
             [
                 'success' => false,
                 'message' => 'There was an issue while processing the request.',
-                'errors' => $thrownEvent->getErrorList()
+                'errors' => $thrownEvent->getErrorList(),
             ]
         );
 

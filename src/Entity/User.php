@@ -10,15 +10,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
-implements
-    UserInterface,
-    PasswordAuthenticatedUserInterface,
-    EntityValidatorInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityValidatorInterface
 {
     #[Groups(['post:read'])]
     #[ORM\Id]
@@ -155,7 +151,9 @@ implements
         return $this;
     }
 
-    public function eraseCredentials(): void {}
+    public function eraseCredentials(): void
+    {
+    }
 
     public function getUserIdentifier(): string
     {

@@ -12,22 +12,25 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PostService
 {
-    const POST_PER_PAGE = 12;
+    public const POST_PER_PAGE = 12;
 
-    function __construct(
+    public function __construct(
         public EntityManagerInterface $entityManager,
         public EntityValidator $entityValidator,
         public Security $security,
         public PostRepository $postRepo,
         private readonly EntityPaginator $paginator,
-    ) {}
+    ) {
+    }
 
     /**
-     * Create Post from Request action
+     * Create Post from Request action.
+     *
      * @param Request $request the incomming request
+     *
      * @return Post the created Post
      */
-    function createPost(Request $request): Post
+    public function createPost(Request $request): Post
     {
         $post = new Post();
         $post->setTitle($request->get('title'));
@@ -41,11 +44,9 @@ class PostService
     }
 
     /**
-     * Create a pagination for the Posts page
-     * @param int $page,
-     * @return array 
+     * Create a pagination for the Posts page.
      */
-    function paginatePosts(int $page): array
+    public function paginatePosts(int $page): array
     {
         return $this->paginator->paginate(new Post(), $page, self::POST_PER_PAGE);
     }

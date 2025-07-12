@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\AccessTokenRepository;
-use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -66,11 +65,11 @@ class AccessToken
         return $this;
     }
 
-    function isTokenValid(): bool
+    public function isTokenValid(): bool
     {
-        $now = new DateTime();
+        $now = new \DateTime();
 
-        return ($this->getExpirationDate() > $now) &&
-            ! empty($this->user);
+        return ($this->getExpirationDate() > $now)
+            && !empty($this->user);
     }
 }

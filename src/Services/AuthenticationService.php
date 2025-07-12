@@ -5,19 +5,18 @@ namespace App\Services;
 use App\Entity\AccessToken;
 use App\Entity\User;
 use App\Repository\AccessTokenRepository;
-use DateInterval;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 
 class AuthenticationService
 {
-    function __construct(
+    public function __construct(
         public AccessTokenRepository $accessTokenRepo,
         public EntityManagerInterface $entityManager,
-    ) {}
+    ) {
+    }
 
-    function generateUserToken(User $user): AccessToken
+    public function generateUserToken(User $user): AccessToken
     {
         $this->invalidateTokens($user);
 
@@ -26,7 +25,7 @@ class AuthenticationService
         $token->setUser($user);
         $token->setToken(Uuid::uuid4());
         $token->setExpirationDate(
-            (new DateTime('now + 30 mins'))
+            new \DateTime('now + 30 mins')
         );
 
         $user->setToken($token);
@@ -40,9 +39,7 @@ class AuthenticationService
     }
 
     /**
-     * Invalidate previous tokens
-     * @param User $user 
-     * @return void
+     * Invalidate previous tokens.
      */
     private function invalidateTokens(User $user): void
     {

@@ -6,7 +6,7 @@ namespace App\Exceptions;
 interface MessageException
 {
     /**
-     * Specify how the Exception will handle the error list
+     * Specify how the Exception will handle the error list.
      */
     public function getErrorList();
 }

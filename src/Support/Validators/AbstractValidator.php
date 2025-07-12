@@ -8,16 +8,17 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractValidator
 {
-    function __construct(
-        private ValidatorInterface $validator
-    ) {}
+    public function __construct(
+        private ValidatorInterface $validator,
+    ) {
+    }
 
     /**
-     * Validate function to handle the Entity Validation errors
+     * Validate function to handle the Entity Validation errors.
+     *
      * @param EntityValidatorInterface $entity the entity to check
-     * @return void 
      */
-    function validate(EntityValidatorInterface $entity): void
+    public function validate(EntityValidatorInterface $entity): void
     {
         $errors = $this->validator->validate($entity);
 
@@ -27,8 +28,9 @@ abstract class AbstractValidator
     }
 
     /**
-     * Specify the error handling
+     * Specify the error handling.
+     *
      * @param ConstraintViolationList $errors the incomming errors
      */
-    abstract function handleErrorsEntity(ConstraintViolationList $errors);
+    abstract public function handleErrorsEntity(ConstraintViolationList $errors);
 }

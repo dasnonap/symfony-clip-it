@@ -12,19 +12,21 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserService
 {
-    function __construct(
+    public function __construct(
         private UserPasswordHasherInterface $hasher,
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepo,
         private EntityValidator $entityValidator,
-    ) {}
+    ) {
+    }
 
     /**
-     * Create User action
+     * Create User action.
+     *
      * @param Request $request the Incomming Request
      * @param User the inserted user
      */
-    function createUser(Request $request): User
+    public function createUser(Request $request): User
     {
         $request = json_decode($request->getContent());
 
@@ -40,7 +42,7 @@ class UserService
         $this->entityValidator->validate($user);
 
         if ($this->checkIfUserExists($user)) {
-            throw new AuthenticationException("User already exists with the provided email or username.");
+            throw new AuthenticationException('User already exists with the provided email or username.');
         }
 
         $this->entityManager->persist($user);
@@ -50,19 +52,17 @@ class UserService
     }
 
     /**
-     * Find user with matching credentials
-     * @param Request $request
-     * @return User 
+     * Find user with matching credentials.
      */
-    function findUser(Request $request): User
+    public function findUser(Request $request): User
     {
         $jsonRequest = json_decode($request->getContent());
 
         $user = $this->userRepo->findUserByEmail($jsonRequest->email);
 
         if (
-            empty($user) ||
-            ! $this->hasher->isPasswordValid($user, $jsonRequest->password)
+            empty($user)
+            || !$this->hasher->isPasswordValid($user, $jsonRequest->password)
         ) {
             throw new AuthenticationException("User doesn't exist with the provided credentials.");
         }
@@ -71,13 +71,11 @@ class UserService
     }
 
     /**
-     * Check if User is existing 
-     * @param User $user
-     * @return bool
+     * Check if User is existing.
      */
     private function checkIfUserExists(User $user): bool
     {
-        return ! empty($this->userRepo->findUserByUniqueCredentials(
+        return !empty($this->userRepo->findUserByUniqueCredentials(
             $user->getUsername(),
             $user->getEmail()
         ));

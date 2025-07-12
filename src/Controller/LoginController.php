@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Repository\UserRepository;
 use App\Services\AuthenticationService;
 use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,17 +11,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class LoginController extends AbstractController
 {
-
-    function __construct(
+    public function __construct(
         public AuthenticationService $authService,
         public UserService $userService,
-    ) {}
+    ) {
+    }
 
     /**
-     * Login endpoint
+     * Login endpoint.
      */
     #[Route('/api/user/login', name: 'app_api_user_login', methods: ['POST'])]
-    function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         if (empty($request)) {
             return $this->json([

@@ -2,17 +2,15 @@
 
 namespace App\Exceptions;
 
-use Exception;
-
-class AuthenticationException extends Exception implements MessageException
+class AuthenticationException extends \Exception implements MessageException
 {
-    function __construct(string $message)
+    public function __construct(string $message)
     {
         parent::__construct(code: 401);
         $this->message = $message;
     }
 
-    function getErrorList()
+    public function getErrorList()
     {
         return [
             'type' => 'authentication',

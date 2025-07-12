@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Media;
-use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -12,15 +11,16 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 class MediaController extends AbstractController
 {
-    function __construct(
+    public function __construct(
         public UploaderHelper $uploaderHelper,
-    ) {}
+    ) {
+    }
 
     #[Route('media/{id}', 'app_api_get_media', methods: ['GET'])]
-    function getMediaById(Media $media): BinaryFileResponse
+    public function getMediaById(Media $media): BinaryFileResponse
     {
         if (empty($media)) {
-            throw new LogicException("Media is not found.");
+            throw new \LogicException('Media is not found.');
         }
 
         $filePath = $this->uploaderHelper->asset($media, 'uploadFile');

@@ -13,11 +13,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
-    function __construct(
+    public function __construct(
         public UserService $userService,
         public AuthenticationService $authService,
         public Security $security,
-    ) {}
+    ) {
+    }
 
     #[Route('/api/user/register', name: 'app_api_user_register', methods: ['POST'])]
     public function store(Request $request): JsonResponse
@@ -34,7 +35,7 @@ class UserController extends AbstractController
         if (empty($user)) {
             return $this->json([
                 'message' => "User couldn't be created",
-                'success' => false
+                'success' => false,
             ], Response::HTTP_UNAUTHORIZED);
         }
 

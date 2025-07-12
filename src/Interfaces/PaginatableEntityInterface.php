@@ -3,6 +3,8 @@
 namespace App\Interfaces;
 
 /**
- * Marks entities for pagination
+ * Marks entities for pagination.
  */
-interface PaginatableEntityInterface {}
+interface PaginatableEntityInterface
+{
+}

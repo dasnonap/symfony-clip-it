@@ -8,13 +8,11 @@ use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraint as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraint as Assert;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-class Post implements
-    EntityValidatorInterface,
-    PaginatableEntityInterface
+class Post implements EntityValidatorInterface, PaginatableEntityInterface
 {
     #[Groups(['post:read'])]
     #[ORM\Id]

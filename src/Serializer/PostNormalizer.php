@@ -9,16 +9,17 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class PostNormalizer implements NormalizerInterface
 {
-    function __construct(
+    public function __construct(
         #[Autowire(service: 'serializer.normalizer.object')]
         private readonly NormalizerInterface $normalizer,
 
         private UrlGeneratorInterface $router,
-    ) {}
+    ) {
+    }
 
-    function normalize(mixed $data, ?string $format = null, array $context = []): array
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        // add single post url 
+        // add single post url
         return $this->normalizer->normalize($data, $format, $context);
     }
 
