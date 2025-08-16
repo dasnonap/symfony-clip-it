@@ -17,8 +17,7 @@ class PostController extends AbstractController
         public Security $security,
         public PostService $postService,
         public MediaService $mediaService,
-    ) {
-    }
+    ) {}
 
     /**
      * Get posts.
@@ -61,7 +60,7 @@ class PostController extends AbstractController
         if (!empty($request->files->get('files'))) {
             $files = $this->mediaService->createMedia($post, $request);
 
-            dd($files);
+            // dd($files);
         }
 
         return $this->json([

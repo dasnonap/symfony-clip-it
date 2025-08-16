@@ -67,10 +67,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityV
     #[ORM\Column(length: 255)]
     private ?string $refresh_token = null;
 
+    /**
+     * @var Collection<int, Category>
+     */
+    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'user')]
+    private Collection $addedCategories;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->uploadedMedia = new ArrayCollection();
+        $this->addedCategories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -242,6 +249,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityV
     public function setRefreshToken(string $refresh_token): static
     {
         $this->refresh_token = $refresh_token;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getAddedCategories(): Collection
+    {
+        return $this->addedCategories;
+    }
+
+    public function addAddedCategory(Category $addedCategory): static
+    {
+        if (!$this->addedCategories->contains($addedCategory)) {
+            $this->addedCategories->add($addedCategory);
+            $addedCategory->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAddedCategory(Category $addedCategory): static
+    {
+        if ($this->addedCategories->removeElement($addedCategory)) {
+            // set the owning side to null (unless already changed)
+            if ($addedCategory->getUser() === $this) {
+                $addedCategory->setUser(null);
+            }
+        }
 
         return $this;
     }

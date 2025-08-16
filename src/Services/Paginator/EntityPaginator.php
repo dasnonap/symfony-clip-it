@@ -17,8 +17,7 @@ class EntityPaginator
         private readonly RequestStack $requestStack,
         private readonly EntityManagerInterface $entityManager,
         private readonly SerializerInterface $serializer,
-    ) {
-    }
+    ) {}
 
     /**
      * Create pagination.
@@ -30,6 +29,7 @@ class EntityPaginator
         $this->query = $this->entityManager->createQueryBuilder()
             ->select('p')
             ->from($entity::class, 'p')
+            ->orderBy('p.created_at', 'DESC')
             ->setFirstResult($offset)
             ->setMaxResults($postPerPage);
 

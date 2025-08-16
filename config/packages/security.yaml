@@ -34,6 +34,7 @@ security:
   access_control:
     - { path: ^/api/test, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/api/posts/create, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/categories/create, roles: IS_AUTHENTICATED_FULLY }
     # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

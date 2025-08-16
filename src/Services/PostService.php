@@ -6,6 +6,8 @@ use App\Entity\Post;
 use App\Repository\PostRepository;
 use App\Services\Paginator\EntityPaginator;
 use App\Support\Validators\EntityValidator;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +22,7 @@ class PostService
         public Security $security,
         public PostRepository $postRepo,
         private readonly EntityPaginator $paginator,
-    ) {
-    }
+    ) {}
 
     /**
      * Create Post from Request action.
@@ -35,6 +36,7 @@ class PostService
         $post = new Post();
         $post->setTitle($request->get('title'));
         $post->setUser($this->security->getUser());
+        $post->setCreatedAt(new DateTimeImmutable('now'));
         $this->entityValidator->validate($post);
 
         $this->entityManager->persist($post);
