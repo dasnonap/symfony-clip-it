@@ -10,6 +10,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class CategoryDto
 {
     public function __construct(
+        public ?string $id,
+
         #[Assert\Length(
             min: 5,
             max: 255,

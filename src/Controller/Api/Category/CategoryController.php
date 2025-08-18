@@ -82,11 +82,47 @@ class CategoryController extends AbstractController
             return $this->json([
                 'message' => $th->getMessage(),
                 'status' => false
-            ]);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $this->json([
             'status' => true,
+            'category' => $category->getId()
         ], Response::HTTP_OK);
+    }
+
+    #[Route('/{categoryId}/update', methods: ['POST'])]
+    function update(Request $request, string $categoryId): JsonResponse
+    {
+        $dto = new CategoryDto($categoryId);
+
+        $category = $this->categoryService->findCategoryBy('id', $dto);
+
+        if (empty($category)) {
+            return $this->json([
+                'status' => false,
+                'message' => 'Category not found.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $updatedDto = $this->serializer->deserialize(
+            $request->getContent(),
+            CategoryDto::class,
+            'json',
+        );
+
+        try {
+            $updatedCategory = $this->categoryService->update($updatedDto, $category);
+        } catch (\Throwable $th) {
+            return $this->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json([
+            'status' => true,
+            'category' => $updatedCategory->getId()
+        ]);
     }
 }

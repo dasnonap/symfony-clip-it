@@ -6,6 +6,7 @@ use App\Dto\CategoryDto;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Null_;
 
 class CategoryService
 {
@@ -42,11 +43,47 @@ class CategoryService
     }
 
     /**
+     * @param CategoryDto $updated
+     * @param Category $category
+     * @return Category
+     */
+    public function update(CategoryDto $updated, Category $category): Category
+    {
+        $this->entityManager->getConnection()->beginTransaction();
+
+        try {
+            $category->setName($updated->name ?? $category->getName());
+            $category->setCreatedAt($updated->createdAt ?? $category->getCreatedAt());
+            $category->setUser($dto->user ?? $category->getUser());
+
+            $this->entityManager->persist($category);
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+        } catch (\Throwable $th) {
+            $this->entityManager->rollback();
+
+            throw new \LogicException('Error while updating category');
+        }
+
+        return $category;
+    }
+
+    /**
      * @param CategoryDto $dto
      * @return Category|null
      */
     public function search(CategoryDto $dto): Category|null
     {
         return $this->categoryRepository->findOneByName($dto);
+    }
+
+    /**
+     * @param string $param
+     * @param CategoryDto $dto
+     * @return Category|null
+     */
+    public function findCategoryBy(string $param, CategoryDto $dto): Category|null
+    {
+        return $this->categoryRepository->findOneBy([$param => $dto->$param]);
     }
 }
