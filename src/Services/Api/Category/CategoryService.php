@@ -5,8 +5,8 @@ namespace App\Services\Api\Category;
 use App\Dto\CategoryDto;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\Null_;
 
 class CategoryService
 {
@@ -14,6 +14,15 @@ class CategoryService
         private readonly EntityManagerInterface $entityManager,
         private readonly CategoryRepository $categoryRepository,
     ) {}
+
+    public function list(): array
+    {
+        $query = $this->entityManager->createQueryBuilder()
+            ->select('c')
+            ->from(Category::class, 'c');
+
+        return $query->getQuery()->getResult();
+    }
 
     /**
      * @param CategoryDto $dto

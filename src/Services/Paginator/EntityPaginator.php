@@ -38,8 +38,6 @@ class EntityPaginator
         $maxItems = count($paginator);
         $maxPages = ceil($maxItems / $postPerPage);
 
-        // dd($items);
-        // dd($this->serializer->serialize($items[0], 'json'));dd
         return [
             'page' => $page,
             'posts_per_page' => $postPerPage,

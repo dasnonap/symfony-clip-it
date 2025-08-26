@@ -6,16 +6,18 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {
+    #[Groups(['post:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['post:read'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -25,9 +27,11 @@ class Category
     #[ORM\ManyToMany(targetEntity: Post::class, inversedBy: 'categories')]
     private Collection $posts;
 
+    #[Groups(['post:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[Groups(['post:read'])]
     #[ORM\ManyToOne(inversedBy: 'addedCategories')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;

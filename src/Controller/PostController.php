@@ -59,8 +59,6 @@ class PostController extends AbstractController
         // Attach Post media files
         if (!empty($request->files->get('files'))) {
             $files = $this->mediaService->createMedia($post, $request);
-
-            // dd($files);
         }
 
         return $this->json([

@@ -24,10 +24,15 @@ class CategoryController extends AbstractController
         private readonly ValidatorInterface $validator,
     ) {}
 
-    #[Route('/list', name: 'api_categories_list', methods: ['GET'])]
+    #[Route('/', name: 'api_categories_list', methods: ['GET'])]
     public function index(Request $request): JsonResponse
     {
-        throw new \Exception("not supported yet");
+        $categories = $this->categoryService->list();
+
+        return $this->json([
+            'status' => true,
+            'categories' => $categories
+        ], Response::HTTP_OK, [], ['groups' => ['post:read']]);
     }
 
     #[Route('/create', name: 'app_categories_create', methods: ['POST'])]
@@ -91,7 +96,7 @@ class CategoryController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('/{categoryId}/update', methods: ['POST'])]
+    #[Route('/{categoryId}/update', name: 'api_category_update', methods: ['POST'])]
     function update(Request $request, string $categoryId): JsonResponse
     {
         $dto = new CategoryDto($categoryId);
@@ -126,7 +131,7 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    #[Route('/{categoryId}', methods: ['DELETE'])]
+    #[Route('/{categoryId}', name: 'api_category_delete', methods: ['DELETE'])]
     public function delete(Request $request, string $categoryId): JsonResponse
     {
         $dto = new CategoryDto($categoryId);
