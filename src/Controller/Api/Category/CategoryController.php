@@ -125,4 +125,32 @@ class CategoryController extends AbstractController
             'category' => $updatedCategory->getId()
         ]);
     }
+
+    #[Route('/{categoryId}', methods: ['DELETE'])]
+    public function delete(Request $request, string $categoryId): JsonResponse
+    {
+        $dto = new CategoryDto($categoryId);
+
+        $category = $this->categoryService->findCategoryBy('id', $dto);
+
+        if (empty($category)) {
+            return $this->json([
+                'status' => false,
+                'message' => 'Category not found.'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $this->categoryService->delete($category);
+        } catch (\Throwable $th) {
+            return $this->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json([
+            'status' => true,
+        ]);
+    }
 }

@@ -86,4 +86,20 @@ class CategoryService
     {
         return $this->categoryRepository->findOneBy([$param => $dto->$param]);
     }
+
+    /**
+     * @param Category $category
+     * @return bool
+     */
+    public function delete(Category $category): bool
+    {
+        try {
+            $this->entityManager->remove($category);
+            $this->entityManager->flush();
+        } catch (\Throwable $th) {
+            throw new \LogicException("Error while deleting category.");
+        }
+
+        return true;
+    }
 }
