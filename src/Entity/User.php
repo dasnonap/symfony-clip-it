@@ -73,6 +73,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityV
     #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'user')]
     private Collection $addedCategories;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?OtpCode $otpCode = null;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -279,6 +282,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityV
                 $addedCategory->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOtpCode(): ?OtpCode
+    {
+        return $this->otpCode;
+    }
+
+    public function setOtpCode(OtpCode $otpCode): static
+    {
+        // set the owning side of the relation if necessary
+        if ($otpCode->getUser() !== $this) {
+            $otpCode->setUser($this);
+        }
+
+        $this->otpCode = $otpCode;
 
         return $this;
     }

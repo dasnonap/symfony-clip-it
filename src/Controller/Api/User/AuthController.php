@@ -14,8 +14,7 @@ class AuthController extends AbstractController
     public function __construct(
         public AuthenticationService $authService,
         public UserService $userService,
-    ) {
-    }
+    ) {}
 
     /**
      * Login endpoint.
@@ -33,10 +32,13 @@ class AuthController extends AbstractController
 
         $userToken = $this->authService->generateUserToken($user);
 
+        $sendOtp = $this->authService->sendUserOtp($user, $userToken);
+
         return $this->json([
             'result' => true,
             'token' => $userToken->getToken(),
             'user' => $user->toArray(),
+            'sendOtp' => $sendOtp
         ]);
     }
 }

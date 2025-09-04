@@ -7,14 +7,16 @@ use App\Entity\User;
 use App\Repository\AccessTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class AuthenticationService
 {
     public function __construct(
         public AccessTokenRepository $accessTokenRepo,
         public EntityManagerInterface $entityManager,
-    ) {
-    }
+        protected readonly MailerInterface $mailer,
+    ) {}
 
     /**
      * Generate User Token.
@@ -63,6 +65,30 @@ class AuthenticationService
         }
 
         return $accessToken->getUser();
+    }
+
+    /**
+     * Send User OTP email
+     */
+    public function sendUserOtp(User $user): bool
+    {
+        $token = $user->getToken();
+
+        $email = (new Email())
+            ->from('aaaaa@test.com')
+            ->to($user->getEmail())
+            ->subject('This is a test OTP Email')
+            ->text('yupeeeee');
+
+        try {
+            $this->mailer->send($email);
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return false;
+        }
+
+        return true;
     }
 
     /**

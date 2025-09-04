@@ -24,6 +24,9 @@ class AccessToken
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\OneToOne(mappedBy: 'token', cascade: ['persist', 'remove'])]
+    private ?OtpCode $otpCode = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,5 +74,22 @@ class AccessToken
 
         return ($this->getExpirationDate() > $now)
             && !empty($this->user);
+    }
+
+    public function getOtpCode(): ?OtpCode
+    {
+        return $this->otpCode;
+    }
+
+    public function setOtpCode(OtpCode $otpCode): static
+    {
+        // set the owning side of the relation if necessary
+        if ($otpCode->getToken() !== $this) {
+            $otpCode->setToken($this);
+        }
+
+        $this->otpCode = $otpCode;
+
+        return $this;
     }
 }
