@@ -13,8 +13,7 @@ class MediaController extends AbstractController
 {
     public function __construct(
         public UploaderHelper $uploaderHelper,
-    ) {
-    }
+    ) {}
 
     #[Route('media/{id}', 'app_api_get_media', methods: ['GET'])]
     public function getMediaById(Media $media): BinaryFileResponse

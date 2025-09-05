@@ -64,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityV
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'creator', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $uploadedMedia;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $refresh_token = null;
 
     /**
@@ -161,9 +161,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityV
         return $this;
     }
 
-    public function eraseCredentials(): void
-    {
-    }
+    public function eraseCredentials(): void {}
 
     public function getUserIdentifier(): string
     {
